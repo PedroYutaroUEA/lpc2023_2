@@ -1,4 +1,4 @@
 # lpc2023_2
 
-<h1>Membros:</h1>
+<h5>Membros:</h5>
 - pedro
