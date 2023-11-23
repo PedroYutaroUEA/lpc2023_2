@@ -1,8 +1,5 @@
 import pygame
-#print terminal
-def printar():
-    print("jogo de pong melhorado")
-printar()
+
 pygame.init()
 
 COLOR_BLACK = (0, 0, 0)
