@@ -165,6 +165,6 @@ while game_loop:
 
     # update screen
     pygame.display.flip()
-    game_clock.tick(120)
+    game_clock.tick(60)
 
 pygame.quit()
