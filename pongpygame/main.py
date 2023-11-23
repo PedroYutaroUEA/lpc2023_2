@@ -6,8 +6,10 @@ COLOR_BLACK = (0, 0, 0)
 COLOR_WHITE = (255, 255, 255)
 
 SCORE_MAX = 10
-
-size = (1280, 720)
+# view height/width screen
+VH = 1280
+VW = 720
+size = (VH, VW)
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("MyPong - PyGame Edition - 2022-12-12")
 
@@ -39,8 +41,10 @@ player_2_y = 300
 
 # ball
 ball = pygame.image.load("assets/ball.png")
-ball_x = 640
-ball_y = 360
+# origin
+ball_x = VH/2
+ball_y = VW/2
+
 ball_dx = 5
 ball_dy = 5
 
@@ -161,6 +165,6 @@ while game_loop:
 
     # update screen
     pygame.display.flip()
-    game_clock.tick(60)
+    game_clock.tick(120)
 
 pygame.quit()
