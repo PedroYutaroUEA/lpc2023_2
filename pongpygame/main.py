@@ -21,7 +21,7 @@ score_text_rect.center = (680, 50)
 
 # victory text
 victory_font = pygame.font.Font('assets/PressStart2P.ttf', 100)
-victory_text = victory_font .render('VICTORY', True, COLOR_WHITE, COLOR_BLACK)
+victory_text = victory_font.render('VICTORY', True, COLOR_WHITE, COLOR_BLACK)
 victory_text_rect = score_text.get_rect()
 victory_text_rect.center = (450, 350)
 
@@ -29,24 +29,26 @@ victory_text_rect.center = (450, 350)
 bounce_sound_effect = pygame.mixer.Sound('assets/bounce.wav')
 scoring_sound_effect = pygame.mixer.Sound('assets/258020__kodack__arcade-bleep-sound.wav')
 
+# paddle's layout
+PADDLE_HEIGHT = 150
+
 # player 1
 player_1 = pygame.image.load("assets/player.png")
-player_1_y = 300
+player_1_y = 300  # paddle position
 player_1_move_up = False
 player_1_move_down = False
 
 # player 2 - robot
 player_2 = pygame.image.load("assets/player.png")
-player_2_y = 300
+player_2_y = 300  # paddle position
 
 # ball
 ball = pygame.image.load("assets/ball.png")
-# origin
-ball_x = VW/2
-ball_y = VH/2
-
+ball_x = VW / 2  # ball position vw
+ball_y = VH / 2  # ball position vh
 ball_dx = 5
 ball_dy = 5
+punched_corner = False
 
 # score
 score_1 = 0
@@ -81,24 +83,30 @@ while game_loop:
         screen.fill(COLOR_BLACK)
 
         # ball collision with the wall
-        if ball_y > 700:
+        if ball_y > 700 or ball_y <= 0:
             ball_dy *= -1
             bounce_sound_effect.play()
-        elif ball_y <= 0:
-            ball_dy *= -1
-            bounce_sound_effect.play()
+            punched_corner = False
 
         # ball collision with the player 1 's paddle
         if ball_x < 100:
-            if player_1_y < ball_y + 25:
-                if player_1_y + 150 > ball_y:
-                    ball_dx *= -1
-                    bounce_sound_effect.play()
+            if ball_x > 90:
+                # ball touches the paddle
+                if player_1_y < ball_y + (ball_dx * ball_dy):
+                    if player_1_y + PADDLE_HEIGHT > ball_y:
+                        ball_dx *= -1
+                        bounce_sound_effect.play()
+            elif not punched_corner:
+                if player_1_y < ball_y + (ball_dx * ball_dy):
+                    if player_1_y + PADDLE_HEIGHT > ball_y:
+                        ball_dy *= -1
+                        bounce_sound_effect.play()
+                        punched_corner = True
 
         # ball collision with the player 2 's paddle
         if ball_x > 1160:
             if player_2_y < ball_y + 25:
-                if player_2_y + 150 > ball_y:
+                if player_2_y + PADDLE_HEIGHT > ball_y:
                     ball_dx *= -1
                     bounce_sound_effect.play()
 
