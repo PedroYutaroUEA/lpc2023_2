@@ -1,5 +1,4 @@
 import pygame
-
 #print terminal
 def printar():
     print("jogo de pong melhorado")
