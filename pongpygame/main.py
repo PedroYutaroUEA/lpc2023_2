@@ -35,20 +35,21 @@ PADDLE_HEIGHT = 150
 
 # player 1
 player_1 = pygame.image.load("assets/player.png")
-player_1_y = 300
+player_1_y = 300  # paddle position
 player_1_move_up = False
 player_1_move_down = False
 
-# player 2 - AI
+# player 2 - robot
 player_2 = pygame.image.load("assets/player.png")
-player_2_y = 300
+player_2_y = 300  # paddle position
 
 # ball
 ball = pygame.image.load("assets/ball.png")
-ball_x = VW / 2
-ball_y = VH / 2
+ball_x = VW / 2  # ball position vw
+ball_y = VH / 2  # ball position vh
 ball_dx = 5
 ball_dy = 5
+punched_corner = False
 
 # score
 score_1 = 0
@@ -59,10 +60,12 @@ game_loop = True
 game_clock = pygame.time.Clock()
 
 while game_loop:
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             game_loop = False
-        # keystroke events
+
+        #  keystroke events
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
                 player_1_move_up = True
@@ -74,24 +77,41 @@ while game_loop:
             if event.key == pygame.K_DOWN:
                 player_1_move_down = False
 
-    # checking victory condition
+    # checking the victory condition
     if score_1 < SCORE_MAX and score_2 < SCORE_MAX:
+
+        # clear screen
         screen.fill(COLOR_BLACK)
 
         # ball collision with the wall
-        if ball_y >= VH - 20 or ball_y <= 0:
+        if ball_y > 700 or ball_y <= 0:
             ball_dy *= -1
             bounce_sound_effect.play()
+            # updates punched corner stats
+            punched_corner = False
 
-        # ball collision with player 1
-        if ball_x < 100 and player_1_y < ball_y < player_1_y + PADDLE_HEIGHT:
-            ball_dx *= -1
-            bounce_sound_effect.play()
+        # ball collision with the player 1 's paddle
+        if ball_x < 100:
+            if ball_x > 90:
+                # ball touches the paddle
+                if player_1_y < ball_y + (ball_dx * ball_dy):
+                    if player_1_y + PADDLE_HEIGHT > ball_y:
+                        ball_dx *= -1
+                        bounce_sound_effect.play()
+            # if ball punches the corner
+            elif not punched_corner:
+                if player_1_y < ball_y + (ball_dx * ball_dy):
+                    if player_1_y + PADDLE_HEIGHT > ball_y:
+                        ball_dy *= -1
+                        bounce_sound_effect.play()
+                        punched_corner = True
 
-        # ball collision with player 2
-        elif ball_x > 1160 and player_2_y < ball_y < player_2_y + PADDLE_HEIGHT:
-            ball_dx *= -1
-            bounce_sound_effect.play()
+        # ball collision with the player 2 's paddle
+        if ball_x > 1160:
+            if player_2_y < ball_y + 25:
+                if player_2_y + PADDLE_HEIGHT > ball_y:
+                    ball_dx *= -1
+                    bounce_sound_effect.play()
 
         # scoring points
         if ball_x < -50:
@@ -111,14 +131,14 @@ while game_loop:
             scoring_sound_effect.play()
 
         # ball movement
-        ball_x += ball_dx
-        ball_y += ball_dy
+        ball_x = ball_x + ball_dx
+        ball_y = ball_y + ball_dy
 
         # player 1 movement
         if player_1_move_up and player_1_y > 0:
-            player_1_y -= 5.5
+            player_1_y -= 10
         elif player_1_move_down and player_1_y < VH - PADDLE_HEIGHT:
-            player_1_y += 5.5
+            player_1_y += 10
 
         # player 1 collides with upper wall
         if player_1_y <= 0:
@@ -128,6 +148,7 @@ while game_loop:
         elif player_1_y >= 570:
             player_1_y = 570
 
+        # player 2 "Artificial Intelligence"
         if ball_x > VW / 2:
             # making AI unpredictable
             target_y = ball_y + random.randint(-20, 20)
@@ -135,6 +156,7 @@ while game_loop:
                 player_2_y += random.uniform(3, 5)
             elif player_2_y + PADDLE_HEIGHT / 2 > target_y and player_2_y > 0:
                 player_2_y -= random.uniform(3, 5)
+
         # update score hud
         score_text = score_font.render(str(score_1) + ' x ' + str(score_2), True, COLOR_WHITE, COLOR_BLACK)
 
