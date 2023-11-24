@@ -1,4 +1,5 @@
 import pygame
+import random
 
 pygame.init()
 
@@ -86,6 +87,7 @@ while game_loop:
         if ball_y > 700 or ball_y <= 0:
             ball_dy *= -1
             bounce_sound_effect.play()
+            # updates punched corner stats
             punched_corner = False
 
         # ball collision with the player 1 's paddle
@@ -96,6 +98,7 @@ while game_loop:
                     if player_1_y + PADDLE_HEIGHT > ball_y:
                         ball_dx *= -1
                         bounce_sound_effect.play()
+            # if ball punches the corner
             elif not punched_corner:
                 if player_1_y < ball_y + (ball_dx * ball_dy):
                     if player_1_y + PADDLE_HEIGHT > ball_y:
@@ -112,16 +115,17 @@ while game_loop:
 
         # scoring points
         if ball_x < -50:
-            ball_x = 640
-            ball_y = 360
-            ball_dy *= -1
+            ball_x = VW / 2
+            ball_y = random.uniform(50, VH - 50)
+            ball_dy = random.choice([6.5, -6.5])
             ball_dx *= -1
             score_2 += 1
             scoring_sound_effect.play()
-        elif ball_x > 1320:
-            ball_x = 640
-            ball_y = 360
-            ball_dy *= -1
+
+        elif ball_x > VW + 50:
+            ball_x = VW / 2
+            ball_y = random.uniform(50, VH - 50)
+            ball_dy = random.choice([6.5, -6.5])
             ball_dx *= -1
             score_1 += 1
             scoring_sound_effect.play()
@@ -130,17 +134,11 @@ while game_loop:
         ball_x = ball_x + ball_dx
         ball_y = ball_y + ball_dy
 
-        # player 1 up movement
-        if player_1_move_up:
-            player_1_y -= 5
-        else:
-            player_1_y += 0
-
-        # player 1 down movement
-        if player_1_move_down:
-            player_1_y += 5
-        else:
-            player_1_y += 0
+        # player 1 movement
+        if player_1_move_up and player_1_y > 0:
+            player_1_y -= 10
+        elif player_1_move_down and player_1_y < VH - PADDLE_HEIGHT:
+            player_1_y += 10
 
         # player 1 collides with upper wall
         if player_1_y <= 0:
@@ -151,11 +149,13 @@ while game_loop:
             player_1_y = 570
 
         # player 2 "Artificial Intelligence"
-        player_2_y = ball_y
-        if player_2_y <= 0:
-            player_2_y = 0
-        elif player_2_y >= 570:
-            player_2_y = 570
+        if ball_x > VW / 2:
+            # making AI unpredictable
+            target_y = ball_y + random.randint(-20, 20)
+            if player_2_y + PADDLE_HEIGHT / 2 < target_y and player_2_y < VH - PADDLE_HEIGHT:
+                player_2_y += random.uniform(3, 5)
+            elif player_2_y + PADDLE_HEIGHT / 2 > target_y and player_2_y > 0:
+                player_2_y -= random.uniform(3, 5)
 
         # update score hud
         score_text = score_font.render(str(score_1) + ' x ' + str(score_2), True, COLOR_WHITE, COLOR_BLACK)
