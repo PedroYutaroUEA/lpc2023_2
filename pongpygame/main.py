@@ -108,10 +108,18 @@ while game_loop:
 
         # ball collision with the player 2 's paddle
         if ball_x > 1160:
-            if player_2_y < ball_y + 25:
-                if player_2_y + PADDLE_HEIGHT > ball_y:
-                    ball_dx *= -1
-                    bounce_sound_effect.play()
+            if ball_x < 1170:
+                if player_2_y < ball_y + 25:
+                    if player_2_y + PADDLE_HEIGHT > ball_y:
+                        ball_dx *= -1
+                        bounce_sound_effect.play()
+                    # if ball punches the corner
+            elif not punched_corner:
+                if player_2_y < ball_y + (ball_dx * ball_dy):
+                    if player_2_y + PADDLE_HEIGHT > ball_y:
+                        ball_dy *= -1
+                        bounce_sound_effect.play()
+                        punched_corner = True
 
         # scoring points
         if ball_x < -50:
@@ -131,8 +139,8 @@ while game_loop:
             scoring_sound_effect.play()
 
         # ball movement
-        ball_x = ball_x + ball_dx
-        ball_y = ball_y + ball_dy
+        ball_x += ball_dx
+        ball_y += ball_dy
 
         # player 1 movement
         if player_1_move_up and player_1_y > 0:
