@@ -3,16 +3,17 @@ import random
 
 pygame.init()
 
+# Consts
 COLOR_BLACK = (0, 0, 0)
 COLOR_WHITE = (255, 255, 255)
-
+VW, VH = 1280, 720
 MAX_SCORE = 10
-# view height/width screen
-VW = 1280
-VH = 720
+
+# Game Settings
 size = (VW, VH)
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("MyPong - PyGame Edition - 2022-12-12")
+game_clock = pygame.time.Clock()
 
 # score text
 score_font = pygame.font.Font('assets/PressStart2P.ttf', 44)
@@ -53,13 +54,9 @@ ball_dy = random.choice([6, -6])
 punched_corner = False
 accelerated_x = False
 
-# score
-score_1 = 0
-score_2 = 0
-
 # game loop
+score_1, score_2 = 0, 0
 game_loop = True
-game_clock = pygame.time.Clock()
 
 while game_loop:
 
