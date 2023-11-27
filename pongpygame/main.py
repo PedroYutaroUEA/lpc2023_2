@@ -6,7 +6,7 @@ pygame.init()
 # consts
 COLOR_BLACK, COLOR_WHITE = (0, 0, 0), (255, 255, 255)
 VW, VH = 1280, 720
-MAX_SCORE = 10
+MAX_SCORE = 5
 PADDLE_HEIGHT = 150
 
 # game settings
@@ -153,10 +153,8 @@ while game_loop:
             player_1["y"] += 10
 
         # player 2 movement
-        if ball["x"] > VW / 2:
-            # making AI unpredictable
+        if ball["x"] > VW / 4:
             target_y = ball["y"] + random.randint(-20, 20)
-
             if player_2["y"] + PADDLE_HEIGHT / 2 < target_y and player_2["y"] < VH - PADDLE_HEIGHT:
                 player_2["y"] += random.uniform(5, 8)
             elif player_2["y"] + PADDLE_HEIGHT / 2 > target_y and player_2["y"] > 0:
